@@ -1,0 +1,26 @@
+#!/bin/bash
+echo "diaNN Job Initiated..."
+echo "Command Line: $@"
+
+# Extract output path for status report
+for i in "$@"; do
+  case $i in
+    --out)
+      shift
+      OUT_FILE=$1
+      ;;
+  esac
+done
+
+if [ -n "$OUT_FILE" ]; then
+  echo "Writing to $OUT_FILE"
+  touch "$OUT_FILE"
+fi
+
+# Simulate long job
+for i in {1..10}; do
+  echo "[$(date +%T)] Processing fraction $i/10..."
+  sleep 1
+done
+
+echo "Search complete."
