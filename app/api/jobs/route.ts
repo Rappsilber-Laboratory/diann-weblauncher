@@ -5,12 +5,12 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { Job } from '@/types/job';
 
-const JOBS_DB = path.join(process.cwd(), 'data', 'jobs.json');
-const LOGS_DIR = path.join(process.cwd(), 'data', 'logs');
+const JOBS_DB = '/jobs/jobs.json';
+const LOGS_DIR = '/jobs/logs';
 
 // Ensure directories exist
-if (!fs.existsSync(path.join(process.cwd(), 'data'))) {
-  fs.mkdirSync(path.join(process.cwd(), 'data'));
+if (!fs.existsSync('/jobs')) {
+  fs.mkdirSync('/jobs');
 }
 if (!fs.existsSync(LOGS_DIR)) {
   fs.mkdirSync(LOGS_DIR);

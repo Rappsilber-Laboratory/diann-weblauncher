@@ -5,10 +5,9 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./data:/app/data
-      # Map your data directory here
-      - /path/to/raw/files:/data/raw
-      - /path/to/save/results:/data/results
+      - ./jobs:/jobs
+      # Mount your research data folder to /data for DIA-NN processing
+      - /data:/data
     environment:
-      - PATH=/app/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PATH=/app/bin:/opt/diann:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     restart: always

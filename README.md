@@ -23,10 +23,9 @@ A web-based job launcher for `diaNN` with a friendly frontend for configuration.
 Update the `docker-compose.yml` to mount your data directories:
 ```yaml
 volumes:
-  - ./data:/app/data
-  - /your/raw/files:/data/raw
-  - /your/outputs:/data/out
+  - ./jobs:/jobs
+  - /your/scientific/data:/data
 ```
 
 ## diaNN Wrapper
-This tool expects `diann-wrapper` to be in your container's `PATH`. A dummy version is provided for demonstration in `./bin/diann-wrapper`.
+The wrapper in `bin/` handles directory expansion. Use `/data` in the UI to point to your scientific files.

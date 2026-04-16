@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-const JOBS_DB = path.join(process.cwd(), 'data', 'jobs.json');
-const LOGS_DIR = path.join(process.cwd(), 'data', 'logs');
+const JOBS_DB = '/jobs/jobs.json';
+const LOGS_DIR = '/jobs/logs';
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
