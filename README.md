@@ -1,3 +1,8 @@
+# ! SECURITY WARNING !
+**THIS PROJECT IS NOT SAFE FOR PUBLIC DEPLOYMENT.**
+
+This application is designed for use in controlled, trusted environments (local networks or isolated lab machines only). It allows for **arbitrary command injection** by design to support flexible `diaNN` parameterization. Do not expose this service to the internet.
+
 # diaNN Job Launcher
 
 A web-based job launcher for `diaNN` with a friendly frontend for configuration.
