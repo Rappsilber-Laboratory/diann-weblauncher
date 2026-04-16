@@ -59,7 +59,12 @@ export default function SearchForm({ onStartJob, onCancel }: Props) {
   };
 
   const updateValue = (flag: string, value: any) => {
-    setSelected(selected.map(s => (s.flag === flag ? { ...s, value } : s)));
+    const opt = DIANN_OPTIONS.find(o => o.flag === flag);
+    let sanitizedValue = value;
+    if (opt?.type === 'path' && typeof value === 'string') {
+      sanitizedValue = value.replace(/\\/g, '/');
+    }
+    setSelected(selected.map(s => (s.flag === flag ? { ...s, value: sanitizedValue } : s)));
   };
 
   const jumpToOption = (flag: string) => {
