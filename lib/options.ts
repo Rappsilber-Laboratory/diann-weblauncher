@@ -1,12 +1,12 @@
 import { SearchOption } from '@/types/job';
 
 export const COMMON_OPTIONS: SearchOption[] = [
-  { flag: '--F', description: 'Directory containing .raw or .d files', type: 'path', category: 'common' },
+  { flag: '--F', description: 'Directory containing .raw or .d files', type: 'path', required: true, category: 'common' },
   { flag: '--threads', description: 'Number of CPU threads (max 64)', type: 'number', required: true, defaultValue: '64', category: 'common' },
   { flag: '--verbose', description: 'Log detail level (0-4)', type: 'number', defaultValue: '1', category: 'common' },
   { flag: '--fasta-search', description: 'In silico digest', type: 'boolean', category: 'common' },
   { flag: '--qvalue', description: 'Precursor q-value threshold', type: 'number', defaultValue: '0.01', category: 'common' },
-  { flag: '--out', description: 'Output report file path', type: 'path', category: 'common' },
+  { flag: '--out', description: 'Output report file path', type: 'path', required: true, category: 'common' },
   { flag: '--matrices', description: 'Output quantity matrices', type: 'boolean', category: 'common' },
   { flag: '--lib', description: 'Spectral library file', type: 'path', category: 'common' },
   { flag: '--gen-lib', description: 'Generate spectral library', type: 'boolean', category: 'common' },

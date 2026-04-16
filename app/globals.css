@@ -104,7 +104,8 @@ button:disabled {
 .form-container {
   display: flex;
   gap: 2rem;
-  height: calc(100vh - 200px);
+  flex: 1;
+  min-height: 0;
 }
 
 .options-left {
@@ -112,7 +113,6 @@ button:disabled {
   padding: 1rem;
   background: var(--bg-secondary);
   border-radius: 0.75rem;
-  overflow-y: auto;
   border: 1px solid var(--border);
 }
 
@@ -121,7 +121,6 @@ button:disabled {
   padding: 1rem;
   background: var(--bg-secondary);
   border-radius: 0.75rem;
-  overflow-y: auto;
   border: 1px solid var(--border);
 }
 
