@@ -16,14 +16,23 @@ while [[ $# -gt 0 ]]; do
         echo "Error: $DIR is not a directory" >&2
         exit 1
       fi
+      
+      # Use nullglob to avoid literal glob strings when no match
       shopt -s nullglob
-      while IFS= read -r f; do
-        ARGS+=(--f "$f")
-      done < <(ls -d "$DIR"/*.d 2>/dev/null | sort -V)
-      while IFS= read -r f; do
-        ARGS+=(--f "$f")
-      done < <(ls -d "$DIR"/*.raw 2>/dev/null | sort -V)
+      # Create an array of files
+      FILES=("$DIR"/*.d "$DIR"/*.raw)
       shopt -u nullglob
+      
+      if [ ${#FILES[@]} -eq 0 ]; then
+        echo "Warning: No .d or .raw files found in $DIR" >&2
+      else
+        # Process files one by one to handle spaces correctly
+        # We sort them naturally using sort -V
+        while IFS= read -r -d '' f; do
+            ARGS+=(--f "$f")
+        done < <(printf '%s\0' "${FILES[@]}" | sort -zV)
+      fi
+      
       shift 2
       ;;
     *)
