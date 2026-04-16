@@ -5,8 +5,8 @@ import path from 'path';
 const JOBS_DB = '/jobs/jobs.json';
 const LOGS_DIR = '/jobs/logs';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const jobs = JSON.parse(fs.readFileSync(JOBS_DB, 'utf-8'));
   const job = jobs.find((j: any) => j.id === id);
 
