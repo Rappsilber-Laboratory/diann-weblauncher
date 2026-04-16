@@ -15,4 +15,6 @@ export interface SearchOption {
   type: 'string' | 'number' | 'boolean' | 'path';
   description: string;
   required?: boolean;
+  defaultValue?: string;
+  category?: 'common' | 'other';
 }

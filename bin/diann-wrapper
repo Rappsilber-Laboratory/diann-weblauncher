@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # Find the real diann binary
-DIANN_BIN=$(ls /opt/diann/diann-* 2>/dev/null | head -n 1)
+DIANN_BIN=$(find /opt/diann -maxdepth 2 -name "diann-linux" | head -n 1)
 if [ -z "$DIANN_BIN" ]; then
-    DIANN_BIN=$(which diann)
+    echo "Error: DIA-NN binary (diann-linux) not found in /opt/diann or PATH" >&2
+    exit 1
 fi
 
 ARGS=()

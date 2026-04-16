@@ -28,7 +28,8 @@ RUN mkdir -p /opt/diann && \
     wget https://github.com/vdemichev/DiaNN/releases/download/2.0/DIA-NN-2.5.0-Academia-Linux.zip -O /tmp/diann.zip && \
     unzip /tmp/diann.zip -d /opt/diann && \
     rm /tmp/diann.zip && \
-    chmod +x /opt/diann/diann-* 2>/dev/null || true
+    find /opt/diann -name "diann-linux" -exec chmod +x {} + && \
+    ln -s $(find /opt/diann -name "diann-linux" | head -n 1) /usr/local/bin/diann
 
 # Add diaNN to PATH
 ENV PATH="/opt/diann:/app/bin:${PATH}"
