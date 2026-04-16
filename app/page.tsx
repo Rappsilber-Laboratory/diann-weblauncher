@@ -41,7 +41,13 @@ export default function Home() {
   return (
     <main className="container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1>diaNN Job Launcher</h1>
+        <h1 
+          onClick={() => setIsFormOpen(false)} 
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+          title="Go back to job list"
+        >
+          diaNN Job Launcher
+        </h1>
         {!isFormOpen && (
           <button onClick={() => setIsFormOpen(true)}>Start New Search</button>
         )}
