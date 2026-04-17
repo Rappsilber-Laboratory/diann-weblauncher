@@ -54,7 +54,7 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error('Failed to contact runner', err);
     // Rollback or mark as failed
-    const jobs = JSON.parse(fs.readFileSync(JOBS_DB, 'utf-8'));
+    const jobs = JSON.parse(fs.readFileSync(JOBS_DB, 'utf-8')) as Job[];
     const index = jobs.findIndex(j => j.id === id);
     if (index !== -1) {
       jobs[index].status = 'failed';
