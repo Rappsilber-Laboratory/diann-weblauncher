@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Job } from '@/types/job';
 
-export default function JobList({ jobs, onRefresh, onClone }: { jobs: Job[], onRefresh: () => void, onClone: (job: Job) => void }) {
+export default function JobList({ jobs, onRefresh, onClone, onDelete }: { jobs: Job[], onRefresh: () => void, onClone: (job: Job) => void, onDelete: (id: string) => void }) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [logs, setLogs] = useState<{ [id: string]: { stdout: string, stderr: string } }>({});
 
@@ -51,6 +51,12 @@ export default function JobList({ jobs, onRefresh, onClone }: { jobs: Job[], onR
                 style={{ padding: '0.2rem 0.6rem', fontSize: '0.75rem', background: 'var(--accent)' }}
               >
                 Use as Template
+              </button>
+              <button 
+                onClick={(e) => { e.stopPropagation(); if (confirm('Remove this job and its logs?')) onDelete(job.id); }}
+                style={{ padding: '0.2rem 0.6rem', fontSize: '0.75rem', background: 'var(--bg-secondary)', color: '#ff4444', border: '1px solid #ff4444' }}
+              >
+                Delete
               </button>
             </div>
           </div>

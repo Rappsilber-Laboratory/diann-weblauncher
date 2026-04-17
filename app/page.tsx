@@ -39,6 +39,17 @@ export default function Home() {
     }
   };
 
+  const handleDeleteJob = async (id: string) => {
+    try {
+      const res = await fetch(`/api/jobs/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchJobs();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <main className="container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
@@ -70,6 +81,7 @@ export default function Home() {
             setTemplateOptions(job.options);
             setIsFormOpen(true);
           }}
+          onDelete={handleDeleteJob}
         />
       )}
     </main>

@@ -9,8 +9,10 @@ app.use(express.json());
 const JOBS_DB = '/jobs/jobs.json';
 const LOGS_DIR = '/jobs/logs';
 
+const activeProcesses = new Map();
+
 app.post('/start', (req, res) => {
-  const { id, command } = req.json || req.body;
+  const { id, command } = req.body;
   if (!id || !command) {
     return res.status(400).send('Missing id or command');
   }
@@ -23,6 +25,7 @@ app.post('/start', (req, res) => {
     stdio: ['ignore', 'pipe', 'pipe']
   });
 
+  activeProcesses.set(id, child);
   const pid = child.pid;
   console.log(`Job ${id} started with PID ${pid}`);
 
@@ -51,6 +54,7 @@ app.post('/start', (req, res) => {
 
   child.on('close', (code) => {
     console.log(`Job ${id} finished with code ${code}`);
+    activeProcesses.delete(id);
     try {
       if (fs.existsSync(JOBS_DB)) {
         const jobs = JSON.parse(fs.readFileSync(JOBS_DB, 'utf-8'));
@@ -68,6 +72,23 @@ app.post('/start', (req, res) => {
   });
 
   res.send({ status: 'started' });
+});
+
+app.post('/stop/:id', (req, res) => {
+  const { id } = req.params;
+  const child = activeProcesses.get(id);
+  if (child) {
+    console.log(`Stopping job ${id} (PID ${child.pid})`);
+    try {
+      process.kill(-child.pid, 'SIGKILL'); // Kill process group
+    } catch (err) {
+      console.error('Failed to kill process group', err);
+    }
+    activeProcesses.delete(id);
+    res.send({ status: 'stopped' });
+  } else {
+    res.status(404).send('Job not running on this runner');
+  }
 });
 
 app.listen(3001, () => {
