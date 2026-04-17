@@ -12,7 +12,7 @@ interface Props {
 const DEFAULT_OPTIONS = [
   { flag: '--F', value: '' },
   { flag: '--out', value: '' },
-  { flag: '--threads', value: '64' },
+  { flag: '--threads', value: '16' },
   { flag: '--verbose', value: '1' },
   { flag: '--fasta-search', value: true },
   { flag: '--qvalue', value: '0.01' },

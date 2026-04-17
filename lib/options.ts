@@ -2,7 +2,7 @@ import { SearchOption } from '@/types/job';
 
 export const COMMON_OPTIONS: SearchOption[] = [
   { flag: '--F', description: 'Directory containing .raw or .d files', type: 'path', required: true, category: 'common' },
-  { flag: '--threads', description: 'Number of CPU threads (max 64)', type: 'number', required: true, defaultValue: '64', category: 'common' },
+  { flag: '--threads', description: 'Number of CPU threads (max 64)', type: 'number', required: true, defaultValue: '16', category: 'common' },
   { flag: '--verbose', description: 'Log detail level (0-4)', type: 'number', defaultValue: '1', category: 'common' },
   { flag: '--fasta-search', description: 'In silico digest', type: 'boolean', category: 'common' },
   { flag: '--qvalue', description: 'Precursor q-value threshold', type: 'number', defaultValue: '0.01', category: 'common' },
