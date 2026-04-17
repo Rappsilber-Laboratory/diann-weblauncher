@@ -159,7 +159,7 @@ export default function SearchForm({ onStartJob, onCancel }: Props) {
               {commonAvailable.map(opt => (
                 <div key={opt.flag} className="option-item" onClick={() => addOption(opt)}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <strong>{opt.flag}</strong>
+                    <strong>{opt.flag}{opt.defaultValue && <span style={{ fontWeight: 400, opacity: 0.7, marginLeft: '4px' }}> "{opt.defaultValue}"</span>}</strong>
                     <span className="badge">{opt.type}</span>
                   </div>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>{opt.description}</div>
