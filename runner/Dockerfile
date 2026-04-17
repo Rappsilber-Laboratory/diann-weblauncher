@@ -23,12 +23,17 @@ RUN mkdir -p /opt/diann && \
     find /opt/diann -name "diann-linux" -exec chmod +x {} + && \
     ln -s $(find /opt/diann -name "diann-linux" | head -n 1) /usr/local/bin/diann
 
+# Add necessary logic files from root context
+COPY bin /app/bin
+RUN chmod +x /app/bin/diann-wrapper
+
 # Add diaNN to PATH
 ENV PATH="/opt/diann:/app/bin:${PATH}"
 
-COPY package*.json ./
+# Install runner dependencies
+COPY runner/package*.json ./
 RUN npm install
-COPY . .
+COPY runner/server.js ./
 
 EXPOSE 3001
 CMD ["node", "server.js"]

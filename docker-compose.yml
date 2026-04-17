@@ -9,6 +9,7 @@ services:
       - "3000:3000"
     volumes:
       - ./jobs:/jobs
+      - /data:/data
     environment:
       - RUNNER_URL=http://runner:3001
     depends_on:
@@ -17,11 +18,11 @@ services:
 
   runner:
     build:
-      context: ./runner
+      context: .
+      dockerfile: runner/Dockerfile
     volumes:
       - ./jobs:/jobs
       - /data:/data
-      - ./bin:/app/bin
     environment:
       - PATH=/app/bin:/opt/diann:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     restart: always
