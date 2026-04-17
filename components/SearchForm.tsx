@@ -13,6 +13,7 @@ interface Props {
 const INITIAL_OPTIONS = [
   { flag: '--F', value: '' },
   { flag: '--out', value: '' },
+  { flag: '--out-lib', value: '' },
   { flag: '--threads', value: '16' },
   { flag: '--verbose', value: '1' },
   { flag: '--fasta-search', value: true },
