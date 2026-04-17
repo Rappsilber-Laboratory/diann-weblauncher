@@ -18,7 +18,7 @@ const DEFAULT_OPTIONS = [
   { flag: '--qvalue', value: '0.01' },
   { flag: '--matrices', value: true },
   { flag: '--lib', value: '' },
-  { flag: '--gen-lib', value: true },
+  { flag: '--gen-spec-lib', value: true },
   { flag: '--fasta', value: '' },
   { flag: '--min-fr-mz', value: '200' },
   { flag: '--max-fr-mz', value: '1800' },
@@ -120,13 +120,13 @@ export default function SearchForm({ onStartJob, onCancel }: Props) {
           const opt = DIANN_OPTIONS.find(o => o.flag === s.flag);
           const needsValue = opt?.type !== 'boolean';
           const isEmptyValue = needsValue && s.value === '';
-          
+
           if (isEmptyValue && !opt?.required) return null;
 
           return (
             <span key={s.flag}>
-              <span 
-                className="clickable-opt" 
+              <span
+                className="clickable-opt"
                 onClick={() => jumpToOption(s.flag)}
                 title="Click to jump to this option"
               >
@@ -160,10 +160,10 @@ export default function SearchForm({ onStartJob, onCancel }: Props) {
 
           <div style={{ flex: '1 1 auto', display: 'flex', flexDirection: 'column', overflow: 'hidden', marginTop: '1rem' }}>
             <h3 style={{ marginBottom: '0.5rem', fontSize: '1rem' }}>All Options</h3>
-            <input 
-              type="text" 
-              placeholder="Filter..." 
-              value={filter} 
+            <input
+              type="text"
+              placeholder="Filter..."
+              value={filter}
               onChange={(e) => setFilter(e.target.value)}
               style={{ marginBottom: '0.5rem', padding: '0.3rem 0.5rem' }}
             />
@@ -189,9 +189,9 @@ export default function SearchForm({ onStartJob, onCancel }: Props) {
                 const opt = DIANN_OPTIONS.find(o => o.flag === s.flag);
                 if (!opt) return null;
                 return (
-                  <div 
-                    key={s.flag} 
-                    id={`opt-${s.flag}`} 
+                  <div
+                    key={s.flag}
+                    id={`opt-${s.flag}`}
                     className={`form-field ${highlightedId === s.flag ? 'highlight' : ''}`}
                   >
                     <div className="label-row">
@@ -206,14 +206,14 @@ export default function SearchForm({ onStartJob, onCancel }: Props) {
                     ) : opt.type === 'path' ? (
                       <PathAutocomplete value={s.value} onChange={(v) => updateValue(s.flag, v)} />
                     ) : (
-                      <input 
-                        type={opt.type === 'number' ? 'number' : 'text'} 
-                        value={s.value} 
+                      <input
+                        type={opt.type === 'number' ? 'number' : 'text'}
+                        value={s.value}
                         onChange={(e) => {
-                            let val: any = e.target.value;
-                            if (opt.flag === '--threads' && parseInt(val) > 64) val = '64';
-                            updateValue(s.flag, val);
-                        }} 
+                          let val: any = e.target.value;
+                          if (opt.flag === '--threads' && parseInt(val) > 64) val = '64';
+                          updateValue(s.flag, val);
+                        }}
                         placeholder={`Enter ${opt.type}...`}
                         {...(opt.flag === '--threads' ? { max: 64, min: 1 } : {})}
                       />
