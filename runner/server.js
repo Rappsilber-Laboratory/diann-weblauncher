@@ -23,6 +23,23 @@ app.post('/start', (req, res) => {
     stdio: ['ignore', 'pipe', 'pipe']
   });
 
+  const pid = child.pid;
+  console.log(`Job ${id} started with PID ${pid}`);
+
+  // Update PID in jobs.json immediately
+  try {
+    if (fs.existsSync(JOBS_DB)) {
+      const jobs = JSON.parse(fs.readFileSync(JOBS_DB, 'utf-8'));
+      const index = jobs.findIndex(j => j.id === id);
+      if (index !== -1) {
+        jobs[index].pid = pid;
+        fs.writeFileSync(JOBS_DB, JSON.stringify(jobs, null, 2));
+      }
+    }
+  } catch (err) {
+    console.error('Failed to update PID in jobs.json', err);
+  }
+
   const stdoutFile = path.join(LOGS_DIR, `${id}.stdout.log`);
   const stderrFile = path.join(LOGS_DIR, `${id}.stderr.log`);
 

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Job } from '@/types/job';
 
-export default function JobList({ jobs, onRefresh }: { jobs: Job[], onRefresh: () => void }) {
+export default function JobList({ jobs, onRefresh, onClone }: { jobs: Job[], onRefresh: () => void, onClone: (job: Job) => void }) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [logs, setLogs] = useState<{ [id: string]: { stdout: string, stderr: string } }>({});
 
@@ -39,10 +39,19 @@ export default function JobList({ jobs, onRefresh }: { jobs: Job[], onRefresh: (
               <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{job.outputPath}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              {job.pid && (
+                <span style={{ fontSize: '0.8rem', opacity: 0.6 }}>PID: {job.pid}</span>
+              )}
               <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                 {new Date(job.startTime).toLocaleString()}
               </span>
               <span className={`status-badge ${job.status}`}>{job.status}</span>
+              <button 
+                onClick={(e) => { e.stopPropagation(); onClone(job); }}
+                style={{ padding: '0.2rem 0.6rem', fontSize: '0.75rem', background: 'var(--accent)' }}
+              >
+                Use as Template
+              </button>
             </div>
           </div>
           {expanded === job.id && (

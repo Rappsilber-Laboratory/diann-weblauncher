@@ -6,8 +6,9 @@ import PathAutocomplete from './PathAutocomplete';
 import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
-  onStartJob: (command: string, outputPath: string) => void;
+  onStartJob: (command: string, outputPath: string, options: any[]) => void;
   onCancel: () => void;
+  initialOptions?: any[];
 }
 
 const INITIAL_OPTIONS = [
@@ -42,10 +43,11 @@ const INITIAL_OPTIONS = [
   { flag: '--temp', value: '/data/local/diann-tmp' },
 ];
 
-export default function SearchForm({ onStartJob, onCancel }: Props) {
-  const [selected, setSelected] = useState<any[]>(() => 
-    INITIAL_OPTIONS.map(opt => ({ id: uuidv4(), ...opt }))
-  );
+export default function SearchForm({ onStartJob, onCancel, initialOptions }: Props) {
+  const [selected, setSelected] = useState<any[]>(() => {
+    const base = initialOptions || INITIAL_OPTIONS;
+    return base.map(opt => ({ id: uuidv4(), ...opt }));
+  });
   const [filter, setFilter] = useState('');
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
 
@@ -121,7 +123,7 @@ export default function SearchForm({ onStartJob, onCancel }: Props) {
         <h2 style={{ margin: 0, fontSize: '1.25rem' }}>Configure Search</h2>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }} onClick={onCancel}>Cancel</button>
-          <button onClick={() => onStartJob(currentCommand, outPath)} disabled={!outPath || !selected.find(s => s.flag === '--F')?.value}>
+          <button onClick={() => onStartJob(currentCommand, outPath, selected.map(({id, ...rest}) => rest))} disabled={!outPath || !selected.find(s => s.flag === '--F')?.value}>
             Start Job
           </button>
         </div>

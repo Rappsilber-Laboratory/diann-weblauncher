@@ -25,7 +25,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const { command, outputPath } = await req.json();
+  const { command, outputPath, options } = await req.json();
   const id = uuidv4();
   const startTime = new Date().toISOString();
 
@@ -33,6 +33,7 @@ export async function POST(req: Request) {
     id,
     command,
     outputPath,
+    options,
     status: 'running',
     stdout: '',
     stderr: '',

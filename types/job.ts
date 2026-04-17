@@ -8,6 +8,8 @@ export interface Job {
   startTime: string;
   endTime?: string;
   exitCode?: number | null;
+  pid?: number;
+  options?: any[];
 }
 
 export interface SearchOption {

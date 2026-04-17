@@ -7,6 +7,7 @@ import { Job } from '@/types/job';
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [templateOptions, setTemplateOptions] = useState<any[] | undefined>(undefined);
 
   const fetchJobs = async () => {
     try {
@@ -22,12 +23,12 @@ export default function Home() {
     fetchJobs();
   }, []);
 
-  const handleStartJob = async (command: string, outputPath: string) => {
+  const handleStartJob = async (command: string, outputPath: string, options: any[]) => {
     try {
       const res = await fetch('/api/jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ command, outputPath }),
+        body: JSON.stringify({ command, outputPath, options }),
       });
       if (res.ok) {
         setIsFormOpen(false);
@@ -55,10 +56,21 @@ export default function Home() {
 
       {isFormOpen ? (
         <div className="card">
-          <SearchForm onStartJob={handleStartJob} onCancel={() => setIsFormOpen(false)} />
+          <SearchForm 
+            onStartJob={handleStartJob} 
+            onCancel={() => { setIsFormOpen(false); setTemplateOptions(undefined); }} 
+            initialOptions={templateOptions}
+          />
         </div>
       ) : (
-        <JobList jobs={jobs} onRefresh={fetchJobs} />
+        <JobList 
+          jobs={jobs} 
+          onRefresh={fetchJobs} 
+          onClone={(job) => {
+            setTemplateOptions(job.options);
+            setIsFormOpen(true);
+          }}
+        />
       )}
     </main>
   );
