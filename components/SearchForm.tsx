@@ -3,13 +3,14 @@ import { useState, useEffect } from 'react';
 import { DIANN_OPTIONS } from '@/lib/options';
 import { SearchOption } from '@/types/job';
 import PathAutocomplete from './PathAutocomplete';
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
   onStartJob: (command: string, outputPath: string) => void;
   onCancel: () => void;
 }
 
-const DEFAULT_OPTIONS = [
+const INITIAL_OPTIONS = [
   { flag: '--F', value: '' },
   { flag: '--out', value: '' },
   { flag: '--threads', value: '16' },
@@ -17,8 +18,8 @@ const DEFAULT_OPTIONS = [
   { flag: '--fasta-search', value: true },
   { flag: '--qvalue', value: '0.01' },
   { flag: '--matrices', value: true },
-  { flag: '--lib', value: '' },
   { flag: '--gen-spec-lib', value: true },
+  { flag: '--lib', value: '' },
   { flag: '--fasta', value: '' },
   { flag: '--min-fr-mz', value: '200' },
   { flag: '--max-fr-mz', value: '1800' },
@@ -35,48 +36,57 @@ const DEFAULT_OPTIONS = [
   { flag: '--var-mods', value: '1' },
   { flag: '--reanalyse', value: true },
   { flag: '--rt-profiling', value: true },
+  { flag: '--mod', value: 'UniMod:5,43.005814' },
 ];
 
 export default function SearchForm({ onStartJob, onCancel }: Props) {
-  const [selected, setSelected] = useState<any[]>(DEFAULT_OPTIONS);
+  const [selected, setSelected] = useState<any[]>(() => 
+    INITIAL_OPTIONS.map(opt => ({ id: uuidv4(), ...opt }))
+  );
   const [filter, setFilter] = useState('');
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
 
   const addOption = (opt: SearchOption) => {
-    if (selected.find(s => s.flag === opt.flag)) return;
+    if (!opt.multiple && selected.find(s => s.flag === opt.flag)) return;
     const defaultValue = opt.defaultValue || (opt.type === 'boolean' ? true : '');
-    setSelected([...selected, { flag: opt.flag, value: defaultValue }]);
-    // Jump to the new option after a short delay
+    const newId = uuidv4();
+    setSelected([...selected, { id: newId, flag: opt.flag, value: defaultValue }]);
+    // Jump after a short delay
     setTimeout(() => {
-      jumpToOption(opt.flag);
+      jumpToId(newId);
     }, 100);
   };
 
-  const removeOption = (flag: string) => {
-    const opt = DIANN_OPTIONS.find(o => o.flag === flag);
+  const removeOption = (id: string) => {
+    const item = selected.find(s => s.id === id);
+    if (!item) return;
+    const opt = DIANN_OPTIONS.find(o => o.flag === item.flag);
     if (opt?.required) return;
-    setSelected(selected.filter(s => s.flag !== flag));
+    setSelected(selected.filter(s => s.id !== id));
   };
 
-  const updateValue = (flag: string, value: any) => {
-    const opt = DIANN_OPTIONS.find(o => o.flag === flag);
-    let sanitizedValue = value;
-    if (opt?.type === 'path' && typeof value === 'string') {
-      sanitizedValue = value.replace(/\\/g, '/');
-    }
-    setSelected(selected.map(s => (s.flag === flag ? { ...s, value: sanitizedValue } : s)));
+  const updateValue = (id: string, value: any) => {
+    setSelected(selected.map(s => {
+      if (s.id !== id) return s;
+      const opt = DIANN_OPTIONS.find(o => o.flag === s.flag);
+      let sanitizedValue = value;
+      if (opt?.type === 'path' && typeof value === 'string') {
+        sanitizedValue = value.replace(/\\/g, '/');
+      }
+      return { ...s, value: sanitizedValue };
+    }));
   };
 
-  const jumpToOption = (flag: string) => {
-    const el = document.getElementById(`opt-${flag}`);
+  const jumpToId = (id: string) => {
+    const el = document.getElementById(`opt-${id}`);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setHighlightedId(flag);
+      setHighlightedId(id);
       setTimeout(() => setHighlightedId(null), 2000);
     }
   };
 
-  const availableOptions = DIANN_OPTIONS.filter(opt => !selected.find(s => s.flag === opt.flag));
+  const availableOptions = DIANN_OPTIONS.filter(opt => opt.multiple || !selected.find(s => s.flag === opt.flag));
   const commonAvailable = availableOptions.filter(o => o.category === 'common');
   const otherAvailable = availableOptions.filter(o => o.category === 'other' || !o.category)
     .filter(o => o.flag.toLowerCase().includes(filter.toLowerCase()) || o.description.toLowerCase().includes(filter.toLowerCase()));
@@ -120,14 +130,14 @@ export default function SearchForm({ onStartJob, onCancel }: Props) {
           const opt = DIANN_OPTIONS.find(o => o.flag === s.flag);
           const needsValue = opt?.type !== 'boolean';
           const isEmptyValue = needsValue && s.value === '';
-
+          
           if (isEmptyValue && !opt?.required) return null;
 
           return (
-            <span key={s.flag}>
-              <span
-                className="clickable-opt"
-                onClick={() => jumpToOption(s.flag)}
+            <span key={s.id}>
+              <span 
+                className="clickable-opt" 
+                onClick={() => jumpToId(s.id)}
                 title="Click to jump to this option"
               >
                 {s.flag}
@@ -153,6 +163,9 @@ export default function SearchForm({ onStartJob, onCancel }: Props) {
                     <span className="badge">{opt.type}</span>
                   </div>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>{opt.description}</div>
+                  {opt.multiple && (
+                    <div style={{ fontSize: '0.6rem', color: 'var(--accent)', marginTop: '2px', fontWeight: 'bold' }}>Can be added multiple times</div>
+                  )}
                 </div>
               ))}
             </div>
@@ -160,10 +173,10 @@ export default function SearchForm({ onStartJob, onCancel }: Props) {
 
           <div style={{ flex: '1 1 auto', display: 'flex', flexDirection: 'column', overflow: 'hidden', marginTop: '1rem' }}>
             <h3 style={{ marginBottom: '0.5rem', fontSize: '1rem' }}>All Options</h3>
-            <input
-              type="text"
-              placeholder="Filter..."
-              value={filter}
+            <input 
+              type="text" 
+              placeholder="Filter..." 
+              value={filter} 
               onChange={(e) => setFilter(e.target.value)}
               style={{ marginBottom: '0.5rem', padding: '0.3rem 0.5rem' }}
             />
@@ -175,6 +188,9 @@ export default function SearchForm({ onStartJob, onCancel }: Props) {
                     <span className="badge">{opt.type}</span>
                   </div>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>{opt.description}</div>
+                  {opt.multiple && (
+                    <div style={{ fontSize: '0.6rem', color: 'var(--accent)', marginTop: '2px', fontWeight: 'bold' }}>Can be added multiple times</div>
+                  )}
                 </div>
               ))}
             </div>
@@ -189,31 +205,31 @@ export default function SearchForm({ onStartJob, onCancel }: Props) {
                 const opt = DIANN_OPTIONS.find(o => o.flag === s.flag);
                 if (!opt) return null;
                 return (
-                  <div
-                    key={s.flag}
-                    id={`opt-${s.flag}`}
-                    className={`form-field ${highlightedId === s.flag ? 'highlight' : ''}`}
+                  <div 
+                    key={s.id} 
+                    id={`opt-${s.id}`} 
+                    className={`form-field ${highlightedId === s.id ? 'highlight' : ''}`}
                   >
                     <div className="label-row">
                       <label style={{ fontWeight: 600, fontSize: '0.85rem' }}>{s.flag}</label>
                       {!opt.required && (
-                        <button className="remove-btn" onClick={() => removeOption(s.flag)}>Remove</button>
+                        <button className="remove-btn" onClick={() => removeOption(s.id)}>Remove</button>
                       )}
                     </div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>{opt.description}</div>
                     {opt.type === 'boolean' ? (
                       <div className="boolean-active">Active</div>
                     ) : opt.type === 'path' ? (
-                      <PathAutocomplete value={s.value} onChange={(v) => updateValue(s.flag, v)} />
+                      <PathAutocomplete value={s.value} onChange={(v) => updateValue(s.id, v)} />
                     ) : (
-                      <input
-                        type={opt.type === 'number' ? 'number' : 'text'}
-                        value={s.value}
+                      <input 
+                        type={opt.type === 'number' ? 'number' : 'text'} 
+                        value={s.value} 
                         onChange={(e) => {
                           let val: any = e.target.value;
                           if (opt.flag === '--threads' && parseInt(val) > 64) val = '64';
-                          updateValue(s.flag, val);
-                        }}
+                          updateValue(s.id, val);
+                        }} 
                         placeholder={`Enter ${opt.type}...`}
                         {...(opt.flag === '--threads' ? { max: 64, min: 1 } : {})}
                       />

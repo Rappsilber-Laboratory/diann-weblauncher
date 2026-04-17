@@ -16,5 +16,6 @@ export interface SearchOption {
   description: string;
   required?: boolean;
   defaultValue?: string;
+  multiple?: boolean;
   category?: 'common' | 'other';
 }

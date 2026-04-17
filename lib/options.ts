@@ -26,6 +26,10 @@ export const COMMON_OPTIONS: SearchOption[] = [
   { flag: '--var-mods', description: 'Max variable modifications', type: 'number', defaultValue: '1', category: 'common' },
   { flag: '--reanalyse', description: 'Enable MBR', type: 'boolean', category: 'common' },
   { flag: '--rt-profiling', description: 'ID, RT and IM profiling', type: 'boolean', category: 'common' },
+  { flag: '--mod', description: 'Carbamidomethylation (C)', type: 'string', multiple: true, defaultValue: 'UniMod:5,43.005814', category: 'common' },
+  { flag: '--mod', description: 'Custom modification', type: 'string', multiple: true, category: 'common' },
+  { flag: '--var-mod', description: 'Phosphorylation (STY)', type: 'string', multiple: true, defaultValue: 'UniMod:21,79.966331,STY', category: 'common' },
+  { flag: '--var-mod', description: 'Custom variable mod', type: 'string', multiple: true, category: 'common' },
 ];
 
 export const OTHER_OPTIONS: SearchOption[] = [
@@ -98,7 +102,6 @@ export const OTHER_OPTIONS: SearchOption[] = [
   { "flag": "--min-peak", "description": "sets the minimum peak height to consider. Must be 0.01 or greater", "type": "number", "category": "other" },
   { "flag": "--min-pr-charge", "description": "sets the minimum precursor charge for the in silico library generation or library-free search", "type": "number", "category": "other" },
   { "flag": "--missed-cleavages", "description": "sets the maximum number of missed cleavages", "type": "number", "category": "other" },
-  { "flag": "--mod", "description": "declares a modification name. Examples: \"--mod UniMod:5,43.005814\", \"--mod SILAC-Lys8,8.014199,label\"", "type": "string", "category": "other" },
   { "flag": "--no-batch-mode", "description": "disable batch mode, consequently, use all precursors for calibration", "type": "boolean", "category": "other" },
   { "flag": "--no-calibration", "description": "disables mass calibration, not recommended", "type": "boolean", "category": "other" },
   { "flag": "--no-cut-after-mod", "description": "discard peptides generated via in silico cuts after residues bearing a particular variable modification", "type": "string", "category": "other" },
