@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
@@ -7,6 +6,7 @@ import { Job } from '@/types/job';
 
 const JOBS_DB = '/jobs/jobs.json';
 const LOGS_DIR = '/jobs/logs';
+const RUNNER_URL = process.env.RUNNER_URL || 'http://runner:3001';
 
 // Ensure directories exist
 if (!fs.existsSync('/jobs')) {
@@ -21,7 +21,6 @@ if (!fs.existsSync(JOBS_DB)) {
 
 export async function GET() {
   const jobs = JSON.parse(fs.readFileSync(JOBS_DB, 'utf-8'));
-  // Update jobs with partial logs if needed or just return metadata
   return NextResponse.json(jobs);
 }
 
@@ -45,31 +44,24 @@ export async function POST(req: Request) {
   jobs.push(newJob);
   fs.writeFileSync(JOBS_DB, JSON.stringify(jobs, null, 2));
 
-  // Spawn process
-  const child = spawn('/bin/sh', ['-c', command], {
-    detached: true,
-    stdio: ['ignore', 'pipe', 'pipe']
-  });
-
-  const stdoutFile = path.join(LOGS_DIR, `${id}.stdout.log`);
-  const stderrFile = path.join(LOGS_DIR, `${id}.stderr.log`);
-
-  const stdoutStream = fs.createWriteStream(stdoutFile);
-  const stderrStream = fs.createWriteStream(stderrFile);
-
-  child.stdout?.pipe(stdoutStream);
-  child.stderr?.pipe(stderrStream);
-
-  child.on('close', (code) => {
-    const jobs = JSON.parse(fs.readFileSync(JOBS_DB, 'utf-8')) as Job[];
+  // Forward to runner
+  try {
+    await fetch(`${RUNNER_URL}/start`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, command }),
+    });
+  } catch (err) {
+    console.error('Failed to contact runner', err);
+    // Rollback or mark as failed
+    const jobs = JSON.parse(fs.readFileSync(JOBS_DB, 'utf-8'));
     const index = jobs.findIndex(j => j.id === id);
     if (index !== -1) {
-      jobs[index].status = code === 0 ? 'completed' : 'failed';
-      jobs[index].endTime = new Date().toISOString();
-      jobs[index].exitCode = code;
+      jobs[index].status = 'failed';
+      jobs[index].stderr = 'Failed to connect to job runner.';
       fs.writeFileSync(JOBS_DB, JSON.stringify(jobs, null, 2));
     }
-  });
+  }
 
   return NextResponse.json(newJob);
 }

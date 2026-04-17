@@ -1,13 +1,27 @@
 version: '3.8'
+
 services:
-  diann-launcher:
-    build: .
+  ui:
+    build: 
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
       - ./jobs:/jobs
-      # Mount your research data folder to /data for DIA-NN processing
+    environment:
+      - RUNNER_URL=http://runner:3001
+    depends_on:
+      - runner
+    restart: always
+
+  runner:
+    build:
+      context: ./runner
+    volumes:
+      - ./jobs:/jobs
       - /data:/data
+      - ./bin:/app/bin
     environment:
       - PATH=/app/bin:/opt/diann:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     restart: always
