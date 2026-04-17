@@ -31,6 +31,7 @@ export const COMMON_OPTIONS: SearchOption[] = [
   { flag: '--mod', description: 'Custom modification', type: 'string', multiple: true, category: 'common' },
   { flag: '--var-mod', description: 'Phosphorylation (STY)', type: 'string', multiple: true, defaultValue: 'UniMod:21,79.966331,STY', category: 'common' },
   { flag: '--var-mod', description: 'Custom variable mod', type: 'string', multiple: true, category: 'common' },
+  { flag: '--temp', description: 'Temporary directory for .dia conversion', type: 'path', defaultValue: '/data/local/diann-tmp', category: 'common' },
 ];
 
 export const OTHER_OPTIONS: SearchOption[] = [
@@ -178,7 +179,6 @@ export const OTHER_OPTIONS: SearchOption[] = [
   { "flag": "--species-ids", "description": "instructs DIA-NN to add the organism identifier to the sequence ids/protein isoform ids &ndash; useful for distinguishing protein ids from different species, when analysing mixed samples. Works with UniProt sequence databases.", "type": "boolean", "category": "other" },
   { "flag": "--sptxt-acc", "description": "sets the fragment filtering mass accuracy (in ppm) when reading .sptxt/.msp libraries", "type": "number", "category": "other" },
   { "flag": "--tag-to-ids", "description": "proteins that have the respective FASTA header start with tag (i.e. the string following '>' starts with tag) will have the tag incorporated in the respective protein sequence ids, names and genes", "type": "string", "category": "other" },
-  { "flag": "--temp", "description": "specifies the Temp directory", "type": "path", "category": "other" },
   { "flag": "--time-corr-only", "description": "restrict machine learning during calibration", "type": "boolean", "category": "other" },
   { "flag": "--time-corr-only-force", "description": "restrict the use of machine learning for peak group selection during all search stages", "type": "boolean", "category": "other" },
   { "flag": "--tims-min-cnt", "description": "specifies the minimum number of peaks to constitute a centroided peak when loading timsTOF data  ", "type": "number", "category": "other" },
