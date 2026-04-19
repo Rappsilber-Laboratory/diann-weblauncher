@@ -53,8 +53,8 @@ export default function Home() {
   return (
     <main className="container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 
-          onClick={() => setIsFormOpen(false)} 
+        <h1
+          onClick={() => setIsFormOpen(false)}
           style={{ cursor: 'pointer', userSelect: 'none' }}
           title="Go back to job list"
         >
@@ -67,16 +67,16 @@ export default function Home() {
 
       {isFormOpen ? (
         <div className="card">
-          <SearchForm 
-            onStartJob={handleStartJob} 
-            onCancel={() => { setIsFormOpen(false); setTemplateOptions(undefined); }} 
+          <SearchForm
+            onStartJob={handleStartJob}
+            onCancel={() => { setIsFormOpen(false); setTemplateOptions(undefined); }}
             initialOptions={templateOptions}
           />
         </div>
       ) : (
-        <JobList 
-          jobs={jobs} 
-          onRefresh={fetchJobs} 
+        <JobList
+          jobs={jobs}
+          onRefresh={fetchJobs}
           onClone={(job) => {
             setTemplateOptions(job.options);
             setIsFormOpen(true);

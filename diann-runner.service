@@ -1,0 +1,18 @@
+[Unit]
+Description=DIA-NN Job Runner Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/diann-launcher/runner
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+
+# Environment variables for local running
+# Replace with actual paths on your host
+Environment=JOBS_ROOT=/path/to/diann-launcher/jobs
+Environment=RUNNER_PORT=3001
+Environment=PATH=/usr/local/bin:/usr/bin:/bin:/path/to/diann-launcher/bin
+
+[Install]
+WantedBy=multi-user.target

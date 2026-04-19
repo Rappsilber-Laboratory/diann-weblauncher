@@ -6,10 +6,17 @@ const path = require('path');
 const app = express();
 app.use(express.json());
 
-const JOBS_DB = '/jobs/jobs.json';
-const LOGS_DIR = '/jobs/logs';
+// Load paths from environment variables for easier hosting outside of Docker
+const JOBS_ROOT = process.env.JOBS_ROOT || '/jobs';
+const LOGS_DIR = process.env.LOGS_DIR || path.join(JOBS_ROOT, 'logs');
+const JOBS_DB = process.env.JOBS_DB || path.join(JOBS_ROOT, 'jobs.json');
 
 const activeProcesses = new Map();
+
+// Ensure log directory exists
+if (!fs.existsSync(LOGS_DIR)) {
+  fs.mkdirSync(LOGS_DIR, { recursive: true });
+}
 
 app.post('/start', (req, res) => {
   const { id, command } = req.body;
@@ -80,7 +87,8 @@ app.post('/stop/:id', (req, res) => {
   if (child) {
     console.log(`Stopping job ${id} (PID ${child.pid})`);
     try {
-      process.kill(-child.pid, 'SIGKILL'); // Kill process group
+      // Kill process group
+      process.kill(-child.pid, 'SIGKILL');
     } catch (err) {
       console.error('Failed to kill process group', err);
     }
@@ -91,6 +99,7 @@ app.post('/stop/:id', (req, res) => {
   }
 });
 
-app.listen(3001, () => {
-  console.log('Runner listening on port 3001');
+const PORT = process.env.RUNNER_PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Runner listening on port ${PORT}`);
 });

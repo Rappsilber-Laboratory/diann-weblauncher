@@ -123,7 +123,7 @@ export default function SearchForm({ onStartJob, onCancel, initialOptions }: Pro
         <h2 style={{ margin: 0, fontSize: '1.25rem' }}>Configure Search</h2>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }} onClick={onCancel}>Cancel</button>
-          <button onClick={() => onStartJob(currentCommand, outPath, selected.map(({id, ...rest}) => rest))} disabled={!outPath || !selected.find(s => s.flag === '--F')?.value}>
+          <button onClick={() => onStartJob(currentCommand, outPath, selected.map(({ id, ...rest }) => rest))} disabled={!outPath || !selected.find(s => s.flag === '--F')?.value}>
             Start Job
           </button>
         </div>
@@ -135,13 +135,13 @@ export default function SearchForm({ onStartJob, onCancel, initialOptions }: Pro
           const opt = DIANN_OPTIONS.find(o => o.flag === s.flag);
           const needsValue = opt?.type !== 'boolean';
           const isEmptyValue = needsValue && s.value === '';
-          
+
           if (isEmptyValue && !opt?.required) return null;
 
           return (
             <span key={s.id}>
-              <span 
-                className="clickable-opt" 
+              <span
+                className="clickable-opt"
                 onClick={() => jumpToId(s.id)}
                 title="Click to jump to this option"
               >
@@ -178,10 +178,10 @@ export default function SearchForm({ onStartJob, onCancel, initialOptions }: Pro
 
           <div style={{ flex: '1 1 auto', display: 'flex', flexDirection: 'column', overflow: 'hidden', marginTop: '1rem' }}>
             <h3 style={{ marginBottom: '0.5rem', fontSize: '1rem' }}>All Options</h3>
-            <input 
-              type="text" 
-              placeholder="Filter..." 
-              value={filter} 
+            <input
+              type="text"
+              placeholder="Filter..."
+              value={filter}
               onChange={(e) => setFilter(e.target.value)}
               style={{ marginBottom: '0.5rem', padding: '0.3rem 0.5rem' }}
             />
@@ -210,9 +210,9 @@ export default function SearchForm({ onStartJob, onCancel, initialOptions }: Pro
                 const opt = DIANN_OPTIONS.find(o => o.flag === s.flag);
                 if (!opt) return null;
                 return (
-                  <div 
-                    key={s.id} 
-                    id={`opt-${s.id}`} 
+                  <div
+                    key={s.id}
+                    id={`opt-${s.id}`}
                     className={`form-field ${highlightedId === s.id ? 'highlight' : ''}`}
                   >
                     <div className="label-row">
@@ -227,14 +227,14 @@ export default function SearchForm({ onStartJob, onCancel, initialOptions }: Pro
                     ) : opt.type === 'path' ? (
                       <PathAutocomplete value={s.value} onChange={(v) => updateValue(s.id, v)} />
                     ) : (
-                      <input 
-                        type={opt.type === 'number' ? 'number' : 'text'} 
-                        value={s.value} 
+                      <input
+                        type={opt.type === 'number' ? 'number' : 'text'}
+                        value={s.value}
                         onChange={(e) => {
                           let val: any = e.target.value;
                           if (opt.flag === '--threads' && parseInt(val) > 64) val = '64';
                           updateValue(s.id, val);
-                        }} 
+                        }}
                         placeholder={`Enter ${opt.type}...`}
                         {...(opt.flag === '--threads' ? { max: 64, min: 1 } : {})}
                       />

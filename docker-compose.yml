@@ -5,24 +5,25 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
+    restart: always
     ports:
       - "3000:3000"
     volumes:
       - ./jobs:/jobs
       - /data:/data
     environment:
-      - RUNNER_URL=http://runner:3001
-    depends_on:
-      - runner
-    restart: always
+      - RUNNER_URL=http://host.docker.internal:3001
+    #   - RUNNER_URL=http://runner:3001
+    # depends_on:
+    #   - runner
 
-  runner:
-    build:
-      context: .
-      dockerfile: runner/Dockerfile
-    volumes:
-      - ./jobs:/jobs
-      - /data:/data
-    environment:
-      - PATH=/app/bin:/opt/diann:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-    restart: always
+  # runner:
+  #   build:
+  #     context: .
+  #     dockerfile: runner/Dockerfile
+  #   volumes:
+  #     - ./jobs:/jobs
+  #     - /data:/data
+  #   environment:
+  #     - PATH=/app/bin:/opt/diann:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  #   restart: always
