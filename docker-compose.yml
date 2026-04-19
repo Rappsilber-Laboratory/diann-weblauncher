@@ -14,6 +14,8 @@ services:
     environment:
       - RUNNER_URL=http://host.docker.internal:3001
     #   - RUNNER_URL=http://runner:3001
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     # depends_on:
     #   - runner
 
