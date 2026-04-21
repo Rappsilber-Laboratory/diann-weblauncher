@@ -38,7 +38,6 @@ const INITIAL_OPTIONS = [
   { flag: '--var-mods', value: '1' },
   { flag: '--reanalyse', value: true },
   { flag: '--rt-profiling', value: true },
-  { flag: '--mod', value: 'UniMod:5,43.005814' },
   { flag: '--var-mod', value: 'UniMod:21,79.966331,STY' },
   { flag: '--temp', value: '/data/local/diann-tmp' },
 ];

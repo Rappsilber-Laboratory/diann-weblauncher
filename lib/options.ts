@@ -27,7 +27,6 @@ export const COMMON_OPTIONS: SearchOption[] = [
   { flag: '--var-mods', description: 'Max variable modifications', type: 'number', defaultValue: '1', category: 'common' },
   { flag: '--reanalyse', description: 'Enable MBR', type: 'boolean', category: 'common' },
   { flag: '--rt-profiling', description: 'ID, RT and IM profiling', type: 'boolean', category: 'common' },
-  { flag: '--mod', description: 'Carbamidomethylation (C)', type: 'string', multiple: true, defaultValue: 'UniMod:5,43.005814', category: 'common' },
   { flag: '--mod', description: 'Custom modification', type: 'string', multiple: true, category: 'common' },
   { flag: '--var-mod', description: 'Phosphorylation (STY)', type: 'string', multiple: true, defaultValue: 'UniMod:21,79.966331,STY', category: 'common' },
   { flag: '--var-mod', description: 'Custom variable mod', type: 'string', multiple: true, category: 'common' },
