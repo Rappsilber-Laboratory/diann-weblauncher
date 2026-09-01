@@ -122,7 +122,7 @@ export default function SearchForm({ onStartJob, onCancel, initialOptions }: Pro
         <h2 style={{ margin: 0, fontSize: '1.25rem' }}>Configure Search</h2>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }} onClick={onCancel}>Cancel</button>
-          <button onClick={() => onStartJob(currentCommand, outPath, selected.map(({ id, ...rest }) => rest))} disabled={!outPath || !selected.find(s => s.flag === '--F')?.value}>
+          <button onClick={() => onStartJob(currentCommand, outPath, selected.map(({ id, ...rest }) => rest))} disabled={!outPath || !(selected.find(s => s.flag === '--F')?.value || selected.find(s => s.flag === '--f')?.value)}>
             Start Job
           </button>
         </div>

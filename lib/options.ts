@@ -1,7 +1,8 @@
 import { SearchOption } from '@/types/job';
 
 export const COMMON_OPTIONS: SearchOption[] = [
-  { flag: '--F', description: 'Directory containing .raw or .d files', type: 'path', required: true, category: 'common' },
+  { flag: '--F', description: 'Directory containing .raw or .d files', type: 'path', required: true, category: 'common', multiple: true },
+  { flag: '--f', description: 'Specifies a run to be analysed, use multiple --f commands to specify multiple runs', type: 'path', category: 'common', multiple: true },
   { flag: '--threads', description: 'Number of CPU threads (max 64)', type: 'number', required: true, defaultValue: '16', category: 'common' },
   { flag: '--verbose', description: 'Log detail level (0-4)', type: 'number', defaultValue: '1', category: 'common' },
   { flag: '--fasta-search', description: 'In silico digest', type: 'boolean', category: 'common' },
@@ -53,7 +54,6 @@ export const OTHER_OPTIONS: SearchOption[] = [
   { "flag": "--duplicate-proteins", "description": "instructs DIA-NN not to skip entries in the sequence database with duplicate IDs (while by default if several entries have the same protein ID, all but the first entry will be skipped)", "type": "boolean", "category": "other" },
   { "flag": "--export-quant", "description": "add fragment quantities, fragment IDs and quality information to the .parquet output report", "type": "boolean", "category": "other" },
   { "flag": "--ext", "description": "adds a string to the end of each file name (specified with --f)", "type": "string", "category": "other" },
-  { "flag": "--f", "description": "specifies a run to be analysed, use multiple --f commands to specify multiple runs", "type": "path", "category": "other" },
   { "flag": "--fasta-filter", "description": "only consider peptides matching the stripped sequences specified in the text file provided (one sequence per line), when processing a sequence database", "type": "path", "category": "other" },
   { "flag": "--fix-scoring", "description": "DIA-NN will not auto-adjust the Scoring setting depending on the search stage; currently, in DDA mode, during second MBR pass or when analysing with empirical library, DIA-NN may auto-switch to Proteoforms regardless of the initial Scoring setting", "type": "boolean", "category": "other" },
   { "flag": "--fixed-loss", "description": "instructs DIA-NN to apply a neutral loss (i.e. subtract the specified mass) to each fragment ion containing the specified modification(s) on the specified sites, proportional to the number of such sites within the fragment; this functionality is highly experimental and untested, there should be no more than one --fixed-loss or --var-loss declaration  ", "type": "string", "category": "other" },
