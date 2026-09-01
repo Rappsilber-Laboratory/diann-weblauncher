@@ -65,7 +65,7 @@ export default function SearchForm({ onStartJob, onCancel, initialOptions }: Pro
     const item = selected.find(s => s.id === id);
     if (!item) return;
     const opt = DIANN_OPTIONS.find(o => o.flag === item.flag);
-    if (opt?.required) return;
+    if (opt?.required && (!opt.multiple || selected.filter(x => x.flag === item.flag).length <= 1)) return;
     setSelected(selected.filter(s => s.id !== id));
   };
 
@@ -216,7 +216,7 @@ export default function SearchForm({ onStartJob, onCancel, initialOptions }: Pro
                   >
                     <div className="label-row">
                       <label style={{ fontWeight: 600, fontSize: '0.85rem' }}>{s.flag}</label>
-                      {!opt.required && (
+                      {(!opt.required || (opt.multiple && selected.filter(x => x.flag === s.flag).length > 1)) && (
                         <button className="remove-btn" onClick={() => removeOption(s.id)}>Remove</button>
                       )}
                     </div>
